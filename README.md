@@ -1,67 +1,16 @@
-## Foundry
+UI Soulbound Certifications Portal: 
+University of Ibadan Secure Credential Verification Engine
+The University of Ibadan Secure Credential Verification Engine is a decentralized academic credential registry built on the Ethereum Sepolia Testnet. This platform leverages Soulbound Tokens (SBTs)—non-transferable digital assets extending the ERC-721 token standard—to issue immutable, tamper-proof academic diplomas. By binding credentials directly to a graduate's cryptographic identity, the system completely eliminates certificate forgery, manual registry lookups, and administrative credential tampering.
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+The deployment credentials for this system are established on the Ethereum Sepolia Testnet using an ERC-721 Soulbound Extension architecture. The verified contract address for this deployment is 0xaCFC92eD2f9E579e64d24BfEabb318c36B8024eE, and its corresponding Etherscan block explorer link is located at https://sepolia.etherscan.io/address/0xaCFC92eD2f9E579e64d24BfEabb318c36B8024eE, where the verified source code and contract state can be publicly audited.
 
-Foundry consists of:
+The system architecture and verification flow operate across three distinct cryptographic layers: the issuance layer, where only the authorized University of Ibadan registry address can execute the minting function; the storage layer, which holds an on-chain packed structure containing the student's name, matriculation number, course of study, graduation year, class of degree, and validity status; and the verification layer, which exposes a public read-only function for verifying individual token identifiers.
+To ensure academic credentials cannot be sold, traded, or shared, the traditional ERC-721 token update and transfer mechanics are explicitly overridden in the issuance layer. Any attempts to call transferFrom or safeTransferFrom are halted directly at the Ethereum Virtual Machine (EVM) level, freezing the token to the original recipient's wallet address forever. The internal update function checks the source and destination addresses, throwing an explicit error stating that academic credentials are Soulbound and non-transferable if a transfer is attempted after initial issuance.
+Student profiles are structured cleanly inside a packed, gas-optimized Solidity structure linked directly to a unique, incremental Token ID certificate number within the storage layer.
 
-- **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
-- **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
-- **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
-- **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+This layout contains explicit fields for the student's name, matriculation number, course of study, graduation year, and class of degree, alongside a boolean flag representing the validity of the record.
 
-## Documentation
+The public verification logic handles the final retrieval layer through a dedicated read-only view function. External entities, employers, and background check agencies can instantly query the validity of any diploma without incurring gas fees. This function performs a real-time state lookup against the decentralized ledger using the unique token ID, enforces a requirement that the certificate exists and remains valid, and returns a clean data tuple containing the verified academic profile.
+Key security and administrative features include robust role-based access control, which uses ownership modifiers to guarantee that only the official, authenticated University of Ibadan administrative registry public key can mint new certificate assets into existence. Furthermore, the contract includes an on-chain deactivation and revocation mechanism. In the event of an administrative entry error or academic review, the registry retains the authority to flip the validity flag to false, causing all future verification checks to fail globally without modifying historical block records. This architecture provides total immunity against insider attacks, as every deployment configuration and minting transaction is permanently written to the immutable ledger, preventing internal database administrators or outside hackers from generating or altering a graduate record undetected.
 
-https://book.getfoundry.sh/
-
-## Usage
-
-### Build
-
-```shell
-$ forge build
-```
-
-### Test
-
-```shell
-$ forge test
-```
-
-### Format
-
-```shell
-$ forge fmt
-```
-
-### Gas Snapshots
-
-```shell
-$ forge snapshot
-```
-
-### Anvil
-
-```shell
-$ anvil
-```
-
-### Deploy
-
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
-
-### Cast
-
-```shell
-$ cast <subcommand>
-```
-
-### Help
-
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
-### Help
+The technical setup and test suite execution are managed through standard package dependency managers. The repository can be cloned and navigated locally, followed by running a standard installation command to retrieve the required smart contract verification packages. Local cryptographic unit tests are executed using hardhat framework commands to compile the solidity assets and run the automated validation assertions.
